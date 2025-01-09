@@ -1,4 +1,4 @@
-Project URL: https://github.com/hashmi846003/Task-Tracker
+Project URL: https://roadmap.sh/projects/task-tracker
 
 Task Tracker CLI
 
