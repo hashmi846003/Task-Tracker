@@ -1,0 +1,69 @@
+name: Task Tracker CI/CD
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build-and-test:
+    name: Build and Test
+    runs-on: ubuntu-latest
+
+    steps:
+    # Step 1: Checkout the code
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    # Step 2: Set up Go environment
+    - name: Set up Go
+      uses: actions/setup-go@v4
+      with:
+        go-version: 1.20
+
+    # Step 3: Install dependencies
+    - name: Install dependencies
+      run: go mod tidy
+
+    # Step 4: Build the application
+    - name: Build the CLI
+      run: go build -o task-cli
+
+    # Step 5: Lint the code
+    - name: Lint the code
+      run: go vet ./...
+
+    # Step 6: Run tests (if any)
+    - name: Run tests
+      run: go test ./...
+
+  deploy:
+    name: Deploy to Artifacts or Release
+    runs-on: ubuntu-latest
+    needs: build-and-test
+    if: github.ref == 'refs/heads/main'
+
+    steps:
+    # Step 1: Checkout the code
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    # Step 2: Set up Go environment
+    - name: Set up Go
+      uses: actions/setup-go@v4
+      with:
+        go-version: 1.20
+
+    # Step 3: Build the application
+    - name: Build the CLI
+      run: go build -o task-cli
+
+    # Step 4: Upload as artifact
+    - name: Upload artifact
+      uses: actions/upload-artifact@v3
+      with:
+        name: task-cli
+        path: task-cli
